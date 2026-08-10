@@ -169,6 +169,7 @@ Key entry points:
 - [`docs/roadmaps/ALPZ_TO_ALPINE_QEMU_KVM_AND_BEYOND.md`](docs/roadmaps/ALPZ_TO_ALPINE_QEMU_KVM_AND_BEYOND.md) — long-horizon Alpz roadmap.
 - [`docs/concepts/SNOWBALL_PRINCIPLE.md`](docs/concepts/SNOWBALL_PRINCIPLE.md) — cumulative-reuse model.
 - [`docs/standards/SNOWBALL_YIELD.md`](docs/standards/SNOWBALL_YIELD.md) — major-run reuse accounting.
+- [`docs/porting/PORTING.md`](docs/porting/PORTING.md) — Zig-version migration guide.
 - [`docs/reports/AGENTIC_SNOWBALL_BATCH_23.md`](docs/reports/AGENTIC_SNOWBALL_BATCH_23.md) — current completed machine proof.
 
 ## Contributing
