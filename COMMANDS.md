@@ -423,3 +423,10 @@ Batch 25A executed the semantic-operation unit/smoke tests, project 53/54/55 reg
 - `python3 tools/verify-freestanding-riscv64-linux-fd-lifecycle.py` runs two independent QEMU machines and proves the 15-ECALL raw RV64 ELF path, 14 exact returns, terminal `exit_group`, deterministic stdin, real fd 0/1/2 bindings, `dup`/`close` alias lifetime, EBADF/EFAULT/ENOSYS, unchanged mappings, W+X=0, and hosted/fake/machine Morphic equality.
 
 Batch 25B executed both verifier modes successfully with Zig 0.14.0 and QEMU 8.2.2. Linux UAPI constants were checked from the installed kernel UAPI headers before implementation. The generation-preservation repair forces machine stdin into reused slot generation 2 and requires the full generation-bearing semantic identity in focused smoke and both QEMU proof modes.
+
+### Batch 26 capacity and dynamic-ELF repair
+
+- `PYTHONDONTWRITEBYTECODE=1 python3 tools/check-bounded-filesystem-capacity.py` is the focused compile-fail regression for project 58. It requires Zig 0.14.0 to reject both a zero object capacity and a capacity larger than the complete `u16` `ObjectId` namespace.
+- `zig build test-bounded-elf64-load-plan test-bounded-address-space-exec-image` exercises the preserved strict static ELF policy and the distinct dynamic `ET_DYN`/`PT_INTERP` interpreter handoff. The handoff owns the interpreter path and performs no relocation.
+
+Batch 26 PR #53 synchronization regenerated the two affected port contracts, all canonical textual indexes, and complete unit/smoke validation evidence; `zig build check --summary all` and `python3 tools/developer-command.py validate-repository` then passed under Zig 0.14.0 for all 60 contracted modules.

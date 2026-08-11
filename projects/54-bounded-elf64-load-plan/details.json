@@ -8,8 +8,8 @@
     "canonical_name": "bounded-elf64-load-plan",
     "display_name": "Bounded Elf64 Load Plan",
     "directory": "projects/54-bounded-elf64-load-plan",
-    "summary": "Convert bounded ELF64 bytes into a failure-atomic RV64 load plan.",
-    "long_description": "Allocation-free composition of canonical ELF parsers with a narrow static RV64 acceptance policy.",
+    "summary": "Convert bounded ELF64 bytes into failure-atomic static or interpreter-handoff RV64 load plans.",
+    "long_description": "Allocation-free composition of canonical ELF parsers with a preserved narrow static policy and a separate ET_EXEC/ET_DYN interpreter-handoff policy that performs no relocation.",
     "status": "experimental-unverified",
     "maturity": "experimental",
     "lifecycle": "experimental",
@@ -43,7 +43,7 @@
     "non_goals": [
       "execute ELF files",
       "map pages",
-      "support dynamic ELF"
+      "perform relocation or dynamic linking"
     ],
     "problems_solved": [
       "partial or policy-ambiguous ELF load planning"
@@ -82,7 +82,7 @@
       "consume the plan without widening policy"
     ],
     "tradeoffs": [
-      "static ET_EXEC RV64 subset only",
+      "plan remains the static ET_EXEC RV64 subset; planDynamic is an explicit interpreter-handoff boundary",
       "64 program-header bound"
     ]
   },
@@ -126,7 +126,9 @@
       "SegmentPlan",
       "max_program_headers",
       "plan",
-      "riscv_machine"
+      "riscv_machine",
+      "DynamicLoadPlan",
+      "planDynamic"
     ],
     "types": [
       {
@@ -144,6 +146,10 @@
       {
         "name": "SegmentPlan",
         "kind": "public declaration"
+      },
+      {
+        "name": "DynamicLoadPlan",
+        "kind": "public declaration"
       }
     ],
     "functions": [
@@ -154,9 +160,22 @@
       {
         "name": "plan",
         "signature": "plan(comptime capacity: usize, bytes: []const u8) Error!LoadPlan(capacity)"
+      },
+      {
+        "name": "DynamicLoadPlan",
+        "signature": "DynamicLoadPlan(comptime capacity: usize, comptime interpreter_capacity: usize) type"
+      },
+      {
+        "name": "planDynamic",
+        "signature": "planDynamic(comptime capacity: usize, comptime interpreter_capacity: usize, bytes: []const u8) Error!DynamicLoadPlan(capacity, interpreter_capacity)"
       }
     ],
-    "methods": [],
+    "methods": [
+      {
+        "name": "interpreterPath",
+        "signature": "interpreterPath(self: *const DynamicLoadPlan) ?[]const u8"
+      }
+    ],
     "constants": [
       {
         "name": "max_program_headers",
@@ -184,7 +203,10 @@
       "UnsupportedAlignment",
       "OverlappingLoadSegments",
       "EntryNotExecutable",
-      "PlanCapacityExceeded"
+      "PlanCapacityExceeded",
+      "InterpreterPathMissingTerminator",
+      "InterpreterPathContainsNul",
+      "InterpreterPathTooLong"
     ],
     "callbacks": [],
     "interfaces": [],
@@ -383,6 +405,209 @@
         "preconditions": [],
         "postconditions": [
           "Module invariants hold on success."
+        ],
+        "failure_atomicity": "No partial plan escapes on failure.",
+        "complexity": {
+          "time": "not applicable",
+          "space": "not applicable"
+        },
+        "invalidates": [],
+        "thread_safety": "not applicable",
+        "examples": []
+      },
+      {
+        "name": "DynamicLoadPlan",
+        "kind": "function",
+        "signature": "DynamicLoadPlan(comptime capacity: usize, comptime interpreter_capacity: usize) type",
+        "visibility": "public",
+        "summary": "Construct the owned dynamic-handoff plan type.",
+        "receiver": null,
+        "inputs": [
+          {
+            "name": "capacity",
+            "type": "usize",
+            "role": "operation input",
+            "ownership": "copied",
+            "borrowing": "synchronous only",
+            "mutability": "immutable",
+            "lifetime": "call",
+            "valid_range": "documented contract",
+            "alignment": "type alignment",
+            "endianness": "not applicable",
+            "format": "Zig value",
+            "required_invariants": [],
+            "validation_performed": [],
+            "accepts_untrusted_input": true,
+            "stored": false,
+            "copied": true,
+            "may_mutate": false,
+            "invalid_input_behavior": "Returns documented error or absence."
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "type": "source-declared return type",
+            "meaning": "Construct the fixed-capacity owned plan type.",
+            "ownership": "not applicable",
+            "borrowed_from": "",
+            "lifetime": "program",
+            "cleanup_required": false,
+            "cleanup_responsibility": "none",
+            "invalidation_conditions": [],
+            "aliasing": "not applicable",
+            "borrows_from_module": false,
+            "borrows_from_input": false,
+            "valid_after_mutation": "not applicable",
+            "absence_meaning": "not applicable"
+          }
+        ],
+        "errors": [],
+        "preconditions": [],
+        "postconditions": [
+          "Construct the owned dynamic-handoff plan type."
+        ],
+        "failure_atomicity": "No partial plan escapes on failure.",
+        "complexity": {
+          "time": "not applicable",
+          "space": "not applicable"
+        },
+        "invalidates": [],
+        "thread_safety": "not applicable",
+        "examples": []
+      },
+      {
+        "name": "planDynamic",
+        "kind": "function",
+        "signature": "planDynamic(comptime capacity: usize, comptime interpreter_capacity: usize, bytes: []const u8) Error!DynamicLoadPlan(capacity, interpreter_capacity)",
+        "visibility": "public",
+        "summary": "Validate ET_EXEC/ET_DYN load and interpreter-handoff facts without relocation.",
+        "receiver": null,
+        "inputs": [
+          {
+            "name": "capacity",
+            "type": "usize",
+            "role": "operation input",
+            "ownership": "copied",
+            "borrowing": "synchronous only",
+            "mutability": "immutable",
+            "lifetime": "call",
+            "valid_range": "documented contract",
+            "alignment": "type alignment",
+            "endianness": "not applicable",
+            "format": "Zig value",
+            "required_invariants": [],
+            "validation_performed": [],
+            "accepts_untrusted_input": true,
+            "stored": false,
+            "copied": true,
+            "may_mutate": false,
+            "invalid_input_behavior": "Returns documented error or absence."
+          },
+          {
+            "name": "bytes",
+            "type": "[]const u8",
+            "role": "operation input",
+            "ownership": "borrowed",
+            "borrowing": "synchronous only",
+            "mutability": "immutable",
+            "lifetime": "call",
+            "valid_range": "documented contract",
+            "alignment": "type alignment",
+            "endianness": "not applicable",
+            "format": "Zig value",
+            "required_invariants": [],
+            "validation_performed": [],
+            "accepts_untrusted_input": true,
+            "stored": false,
+            "copied": false,
+            "may_mutate": false,
+            "invalid_input_behavior": "Returns documented error or absence."
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "type": "source-declared return type",
+            "meaning": "Validate bounded ELF bytes and return a complete plan.",
+            "ownership": "not applicable",
+            "borrowed_from": "",
+            "lifetime": "program",
+            "cleanup_required": false,
+            "cleanup_responsibility": "none",
+            "invalidation_conditions": [],
+            "aliasing": "not applicable",
+            "borrows_from_module": false,
+            "borrows_from_input": false,
+            "valid_after_mutation": "not applicable",
+            "absence_meaning": "not applicable"
+          }
+        ],
+        "errors": [],
+        "preconditions": [],
+        "postconditions": [
+          "Validate ET_EXEC/ET_DYN load and interpreter-handoff facts without relocation."
+        ],
+        "failure_atomicity": "No partial plan escapes on failure.",
+        "complexity": {
+          "time": "not applicable",
+          "space": "not applicable"
+        },
+        "invalidates": [],
+        "thread_safety": "not applicable",
+        "examples": []
+      },
+      {
+        "name": "interpreterPath",
+        "kind": "function",
+        "signature": "interpreterPath(self: *const DynamicLoadPlan) ?[]const u8",
+        "visibility": "public",
+        "summary": "Borrow the owned PT_INTERP pathname when present.",
+        "receiver": null,
+        "inputs": [
+          {
+            "name": "self",
+            "type": "*const LoadPlan",
+            "role": "operation input",
+            "ownership": "borrowed",
+            "borrowing": "synchronous only",
+            "mutability": "immutable",
+            "lifetime": "call",
+            "valid_range": "documented contract",
+            "alignment": "type alignment",
+            "endianness": "not applicable",
+            "format": "Zig value",
+            "required_invariants": [],
+            "validation_performed": [],
+            "accepts_untrusted_input": true,
+            "stored": false,
+            "copied": false,
+            "may_mutate": false,
+            "invalid_input_behavior": "Returns documented error or absence."
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "type": "source-declared return type",
+            "meaning": "Borrow immutable planned segments.",
+            "ownership": "not applicable",
+            "borrowed_from": "",
+            "lifetime": "program",
+            "cleanup_required": false,
+            "cleanup_responsibility": "none",
+            "invalidation_conditions": [],
+            "aliasing": "not applicable",
+            "borrows_from_module": false,
+            "borrows_from_input": false,
+            "valid_after_mutation": "not applicable",
+            "absence_meaning": "not applicable"
+          }
+        ],
+        "errors": [],
+        "preconditions": [],
+        "postconditions": [
+          "Borrow the owned PT_INTERP pathname when present."
         ],
         "failure_atomicity": "No partial plan escapes on failure.",
         "complexity": {

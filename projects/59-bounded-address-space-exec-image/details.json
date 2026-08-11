@@ -154,7 +154,7 @@
       },
       {
         "name": "prepare",
-        "signature": "prepare(main_bytes: []const u8, interp_path: ?[]const u8, interp_bytes: ?[]const u8) Error!ExecPlan"
+        "signature": "prepare(main_bytes: []const u8, interp_bytes: ?[]const u8) Error!ExecPlan"
       }
     ],
     "constants": [],
@@ -564,7 +564,7 @@
       {
         "name": "prepare",
         "kind": "method",
-        "signature": "prepare(main_bytes: []const u8, interp_path: ?[]const u8, interp_bytes: ?[]const u8) Error!ExecPlan",
+        "signature": "prepare(main_bytes: []const u8, interp_bytes: ?[]const u8) Error!ExecPlan",
         "visibility": "public",
         "summary": "Provides prepare.",
         "receiver": {

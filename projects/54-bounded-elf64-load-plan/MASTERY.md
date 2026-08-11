@@ -16,3 +16,7 @@ The key separation is interpretation before mutation: first prove every ELF fact
 2. Explain why boundary-touching ranges are safe under half-open semantics.
 3. Add a rejecting fixture after an otherwise valid row and verify that no value can be observed.
 4. Identify which operations Batch 22B must perform without changing this module's interpretation policy.
+
+## Static proof versus dynamic handoff
+
+Do not weaken `plan` to accept dynamic inputs. `planDynamic` is the adjacent policy: it validates load segments, owns `PT_INTERP`, and leaves `PT_DYNAMIC` and every relocation to the userspace interpreter.

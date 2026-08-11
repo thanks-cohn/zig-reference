@@ -88,6 +88,12 @@
     },
     {
       "kind": "function",
+      "module": "bounded-elf64-load-plan",
+      "name": "DynamicLoadPlan",
+      "signature": "DynamicLoadPlan(comptime capacity: usize, comptime interpreter_capacity: usize) type"
+    },
+    {
+      "kind": "function",
       "module": "endian-integer-codec",
       "name": "EndianIntegerCodec",
       "signature": "EndianIntegerCodec(comptime T: type, comptime endian: std.builtin.Endian) type"
@@ -1287,6 +1293,12 @@
       "signature": "insert(self: *Self, flag: Flag) void"
     },
     {
+      "kind": "function",
+      "module": "bounded-elf64-load-plan",
+      "name": "interpreterPath",
+      "signature": "interpreterPath(self: *const DynamicLoadPlan) ?[]const u8"
+    },
+    {
       "kind": "method",
       "module": "checked-half-open-range",
       "name": "intersection",
@@ -1719,6 +1731,12 @@
       "signature": "plan(start: GuestVirtualAddress, length: usize, access: Access, resolver: PageQuery) Error!Self"
     },
     {
+      "kind": "function",
+      "module": "bounded-elf64-load-plan",
+      "name": "planDynamic",
+      "signature": "planDynamic(comptime capacity: usize, comptime interpreter_capacity: usize, bytes: []const u8) Error!DynamicLoadPlan(capacity, interpreter_capacity)"
+    },
+    {
       "kind": "method",
       "module": "dynamic-array",
       "name": "pop",
@@ -1776,7 +1794,7 @@
       "kind": "method",
       "module": "bounded-address-space-exec-image",
       "name": "prepare",
-      "signature": "prepare(main_bytes: []const u8, interp_path: ?[]const u8, interp_bytes: ?[]const u8) Error!ExecPlan"
+      "signature": "prepare(main_bytes: []const u8, interp_bytes: ?[]const u8) Error!ExecPlan"
     },
     {
       "kind": "method",

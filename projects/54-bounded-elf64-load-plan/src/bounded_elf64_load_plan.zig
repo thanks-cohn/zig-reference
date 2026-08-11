@@ -36,6 +36,9 @@ pub const Error = file_header.ParseError || program_header.ParseError || error{
     OverlappingLoadSegments,
     EntryNotExecutable,
     PlanCapacityExceeded,
+    InterpreterPathMissingTerminator,
+    InterpreterPathContainsNul,
+    InterpreterPathTooLong,
 };
 
 fn checkedEntry(comptime Backing: type, value: u64) error{EntryOutOfRange}!Backing {
@@ -51,6 +54,77 @@ pub fn LoadPlan(comptime capacity: usize) type {
             return self.segments.constItems();
         }
     };
+}
+
+/// A load plan for the dynamic-loader handoff boundary. It owns the PT_INTERP
+/// pathname, but deliberately does not interpret PT_DYNAMIC or relocate bytes.
+pub fn DynamicLoadPlan(comptime capacity: usize, comptime interpreter_capacity: usize) type {
+    return struct {
+        load: LoadPlan(capacity),
+        interpreter_path: [interpreter_capacity]u8 = .{0} ** interpreter_capacity,
+        interpreter_path_len: usize = 0,
+
+        pub fn interpreterPath(self: *const @This()) ?[]const u8 {
+            return if (self.interpreter_path_len == 0) null else self.interpreter_path[0..self.interpreter_path_len];
+        }
+    };
+}
+
+/// Accepts RV64 ET_EXEC or ET_DYN for an interpreter-mediated handoff. PT_DYNAMIC
+/// is retained as loader responsibility; this function performs no relocation.
+pub fn planDynamic(comptime capacity: usize, comptime interpreter_capacity: usize, bytes: []const u8) Error!DynamicLoadPlan(capacity, interpreter_capacity) {
+    var reader = bounded.BoundedReader.init(bytes);
+    const header = try file_header.parse(&reader);
+    if (header.endian != .little) return error.UnsupportedEndian;
+    if (header.machine != riscv_machine) return error.UnsupportedMachine;
+    switch (header.object_type) {
+        .known => |kind| if (kind != .executable and kind != .shared) return error.UnsupportedObjectType,
+        .unknown => return error.UnsupportedObjectType,
+    }
+    const rows = try program_header.parseTable(max_program_headers, &reader, header);
+    var result = DynamicLoadPlan(capacity, interpreter_capacity){
+        .load = .{ .entry = addresses.GuestVirtualAddress.init(try checkedEntry(usize, header.entry)), .segments = vectors.FixedVector(SegmentPlan, capacity).init() },
+    };
+    for (rows.constItems()) |row| switch (row.segment_type) {
+        .known => |kind| switch (kind) {
+            .load => try appendLoad(capacity, bytes, row, &result.load),
+            .interpreter => {
+                if (result.interpreter_path_len != 0) return error.UnsupportedFeature;
+                if (row.file_range.end > bytes.len) return error.SegmentFileOutOfBounds;
+                const raw = bytes[row.file_range.start..row.file_range.end];
+                if (raw.len < 2 or raw[raw.len - 1] != 0) return error.InterpreterPathMissingTerminator;
+                const path = raw[0 .. raw.len - 1];
+                if (path.len > interpreter_capacity) return error.InterpreterPathTooLong;
+                if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InterpreterPathContainsNul;
+                @memcpy(result.interpreter_path[0..path.len], path);
+                result.interpreter_path_len = path.len;
+            },
+            .dynamic, .program_header, .note => {},
+            .null => {},
+            .tls, .shared_library => return error.UnsupportedFeature,
+        },
+        .unknown => return error.UnsupportedFeature,
+    };
+    try validateCompleted(&result.load);
+    return result;
+}
+
+fn appendLoad(comptime capacity: usize, bytes: []const u8, row: program_header.Segment, result: *LoadPlan(capacity)) Error!void {
+    if (row.file_range.end > bytes.len) return error.SegmentFileOutOfBounds;
+    const read = row.permissions.contains(.read);
+    const write = row.permissions.contains(.write);
+    const execute = row.permissions.contains(.execute);
+    if (write and !read) return error.WriteWithoutRead;
+    if (write and execute) return error.UnsupportedPermissions;
+    if (row.alignment > 1 and row.file_range.start % @as(usize, @intCast(row.alignment)) != row.virtual_range.start % @as(usize, @intCast(row.alignment))) return error.UnsupportedAlignment;
+    for (result.segments.constItems()) |existing| if (existing.memory.overlaps(row.virtual_range)) return error.OverlappingLoadSegments;
+    result.segments.append(.{ .source = row.file_range, .memory = row.virtual_range, .memory_start = addresses.GuestVirtualAddress.init(row.virtual_range.start), .file_byte_count = row.file_range.length(), .memory_byte_count = row.virtual_range.length(), .zero_fill_byte_count = row.virtual_range.length() - row.file_range.length(), .permissions = .{ .read = read, .write = write, .execute = execute }, .alignment = row.alignment }) catch return error.PlanCapacityExceeded;
+}
+
+fn validateCompleted(result: anytype) Error!void {
+    if (result.segments.isEmpty()) return error.NoLoadableSegment;
+    for (result.segments.constItems()) |segment| if (segment.permissions.execute and segment.memory.containsValue(result.entry.raw())) return;
+    return error.EntryNotExecutable;
 }
 
 /// Accepts the deliberately narrow static RV64 ELF64 subset and returns an
@@ -255,4 +329,31 @@ test "rejects malformed load arithmetic, alignment, and unsupported features" {
     writeSegment(&bytes, 0, 5, 0x100, 0x1000, 1, 2, 1);
     put(u32, &bytes, 64, 2);
     try std.testing.expectError(error.UnsupportedFeature, plan(1, &bytes));
+}
+
+test "dynamic handoff owns PT_INTERP and leaves PT_DYNAMIC to userspace" {
+    var bytes = fixture(3);
+    put(u16, &bytes, 16, 3); // ET_DYN is valid only through planDynamic.
+    writeSegment(&bytes, 0, 5, 0x180, 0x1000, 2, 2, 1);
+    put(u32, &bytes, 64 + 56, 3); // PT_INTERP
+    put(u64, &bytes, 64 + 56 + 8, 0x190);
+    put(u64, &bytes, 64 + 56 + 32, 7);
+    put(u64, &bytes, 64 + 56 + 40, 7);
+    @memcpy(bytes[0x190..0x197], "/ld.so\x00");
+    put(u32, &bytes, 64 + 112, 2); // PT_DYNAMIC: represented, not relocated.
+    const result = try planDynamic(2, 16, &bytes);
+    try std.testing.expectEqualStrings("/ld.so", result.interpreterPath().?);
+    try std.testing.expectEqual(@as(usize, 1), result.load.items().len);
+    try std.testing.expectError(error.UnsupportedObjectType, plan(2, &bytes));
+}
+
+test "dynamic handoff decisively rejects malformed PT_INTERP" {
+    var bytes = fixture(2);
+    writeSegment(&bytes, 0, 5, 0x180, 0x1000, 2, 2, 1);
+    put(u32, &bytes, 64 + 56, 3);
+    put(u64, &bytes, 64 + 56 + 8, 0x190);
+    put(u64, &bytes, 64 + 56 + 32, 7);
+    put(u64, &bytes, 64 + 56 + 40, 7);
+    @memcpy(bytes[0x190..0x197], "/ld.so!");
+    try std.testing.expectError(error.InterpreterPathMissingTerminator, planDynamic(2, 16, &bytes));
 }
