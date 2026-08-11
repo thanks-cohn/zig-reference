@@ -103,7 +103,7 @@ module.exports = {
       },
       {
         "name": "prepare",
-        "signature": "prepare(main_bytes: []const u8, interp_path: ?[]const u8, interp_bytes: ?[]const u8) Error!ExecPlan"
+        "signature": "prepare(main_bytes: []const u8, interp_bytes: ?[]const u8) Error!ExecPlan"
       }
     ],
     "publicConstants": [],
@@ -135,8 +135,11 @@ module.exports = {
     "standardLibrary": [
       "std.math.add",
       "std.mem.copyForwards",
+      "std.mem.writeInt",
       "std.testing.expect",
+      "std.testing.expectEqual",
       "std.testing.expectEqualDeep",
+      "std.testing.expectEqualStrings",
       "std.testing.expectError"
     ],
     "external": []
@@ -145,7 +148,9 @@ module.exports = {
     "used": [],
     "versionSensitive": [
       "@This",
-      "@memcpy"
+      "@as",
+      "@memcpy",
+      "@sizeOf"
     ],
     "notes": []
   },
@@ -166,6 +171,20 @@ module.exports = {
         "notes": []
       },
       {
+        "name": "@as",
+        "files": [
+          {
+            "path": "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig",
+            "lines": [],
+            "symbols": []
+          }
+        ],
+        "baselineBehavior": "Zig 0.14.0 @as behavior as exercised by this module",
+        "portingRisk": "medium",
+        "likelyChangeCategory": "syntax_or_type_semantics",
+        "notes": []
+      },
+      {
         "name": "@memcpy",
         "files": [
           {
@@ -175,6 +194,20 @@ module.exports = {
           }
         ],
         "baselineBehavior": "Zig 0.14.0 @memcpy behavior as exercised by this module",
+        "portingRisk": "medium",
+        "likelyChangeCategory": "syntax_or_type_semantics",
+        "notes": []
+      },
+      {
+        "name": "@sizeOf",
+        "files": [
+          {
+            "path": "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig",
+            "lines": [],
+            "symbols": []
+          }
+        ],
+        "baselineBehavior": "Zig 0.14.0 @sizeOf behavior as exercised by this module",
         "portingRisk": "medium",
         "likelyChangeCategory": "syntax_or_type_semantics",
         "notes": []
@@ -211,6 +244,19 @@ module.exports = {
         "migrationNotes": []
       },
       {
+        "path": "std.mem.writeInt",
+        "symbols": [
+          "std.mem.writeInt"
+        ],
+        "files": [
+          "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
+        ],
+        "purpose": "implementation support",
+        "versionSensitivity": "medium",
+        "knownChanges": [],
+        "migrationNotes": []
+      },
+      {
         "path": "std.testing.expect",
         "symbols": [
           "std.testing.expect"
@@ -225,9 +271,35 @@ module.exports = {
         "migrationNotes": []
       },
       {
+        "path": "std.testing.expectEqual",
+        "symbols": [
+          "std.testing.expectEqual"
+        ],
+        "files": [
+          "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
+        ],
+        "purpose": "test assertions and test allocation",
+        "versionSensitivity": "medium",
+        "knownChanges": [],
+        "migrationNotes": []
+      },
+      {
         "path": "std.testing.expectEqualDeep",
         "symbols": [
           "std.testing.expectEqualDeep"
+        ],
+        "files": [
+          "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
+        ],
+        "purpose": "test assertions and test allocation",
+        "versionSensitivity": "medium",
+        "knownChanges": [],
+        "migrationNotes": []
+      },
+      {
+        "path": "std.testing.expectEqualStrings",
+        "symbols": [
+          "std.testing.expectEqualStrings"
         ],
         "files": [
           "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
@@ -253,12 +325,16 @@ module.exports = {
     ],
     "testingApis": [
       "std.testing.expect",
+      "std.testing.expectEqual",
       "std.testing.expectEqualDeep",
+      "std.testing.expectEqualStrings",
       "std.testing.expectError"
     ],
     "allocatorApis": [],
     "ioApis": [],
-    "endianApis": [],
+    "endianApis": [
+      "std.mem.writeInt"
+    ],
     "mathApis": [
       "std.math.add"
     ],
@@ -301,7 +377,7 @@ module.exports = {
     "hosted": "supported",
     "freestanding": "supported",
     "targets": [],
-    "endianSensitive": false,
+    "endianSensitive": true,
     "notes": []
   },
   "allocatorUsage": {
@@ -319,7 +395,9 @@ module.exports = {
     "notes": []
   },
   "integerAndCastUsage": {
-    "builtins": [],
+    "builtins": [
+      "@as"
+    ],
     "overflowSemantics": [],
     "notes": []
   },
@@ -344,7 +422,9 @@ module.exports = {
     ],
     "testingApis": [
       "std.testing.expect",
+      "std.testing.expectEqual",
       "std.testing.expectEqualDeep",
+      "std.testing.expectEqualStrings",
       "std.testing.expectError"
     ],
     "semanticCoverage": []
@@ -459,20 +539,30 @@ module.exports = {
     ],
     "searchTerms": [
       "@This",
+      "@as",
       "@memcpy",
+      "@sizeOf",
       "std.math.add",
       "std.mem.copyForwards",
+      "std.mem.writeInt",
       "std.testing.expect",
+      "std.testing.expectEqual",
       "std.testing.expectEqualDeep",
+      "std.testing.expectEqualStrings",
       "std.testing.expectError"
     ],
     "likelyCompilerFailureAreas": [
       "@This",
+      "@as",
       "@memcpy",
+      "@sizeOf",
       "std.math.add",
       "std.mem.copyForwards",
+      "std.mem.writeInt",
       "std.testing.expect",
+      "std.testing.expectEqual",
       "std.testing.expectEqualDeep",
+      "std.testing.expectEqualStrings",
       "std.testing.expectError"
     ],
     "doNotAssume": [
@@ -498,7 +588,19 @@ module.exports = {
         ]
       },
       {
+        "builtin": "@as",
+        "files": [
+          "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
+        ]
+      },
+      {
         "builtin": "@memcpy",
+        "files": [
+          "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
+        ]
+      },
+      {
+        "builtin": "@sizeOf",
         "files": [
           "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
         ]
@@ -518,6 +620,12 @@ module.exports = {
         ]
       },
       {
+        "api": "std.mem.writeInt",
+        "files": [
+          "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
+        ]
+      },
+      {
         "api": "std.testing.expect",
         "files": [
           "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig",
@@ -525,7 +633,19 @@ module.exports = {
         ]
       },
       {
+        "api": "std.testing.expectEqual",
+        "files": [
+          "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
+        ]
+      },
+      {
         "api": "std.testing.expectEqualDeep",
+        "files": [
+          "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
+        ]
+      },
+      {
+        "api": "std.testing.expectEqualStrings",
         "files": [
           "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig"
         ]

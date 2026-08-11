@@ -5,6 +5,10 @@ pub const Kind = enum { file, directory };
 pub const Error = error{ InvalidPath, NameTooLong, NotFound, NotDirectory, IsDirectory, NoSpace, FileTooLarge, InvalidObject, OffsetOverflow };
 
 pub fn FileSystem(comptime object_capacity: usize, comptime name_capacity: usize, comptime file_capacity: usize) type {
+    if (object_capacity == 0)
+        @compileError("ZIGREF-FILESYSTEM-INVALID-CAPACITY: object_capacity must include the root object");
+    if (object_capacity > @as(usize, std.math.maxInt(u16)) + 1)
+        @compileError("ZIGREF-FILESYSTEM-INVALID-CAPACITY: object_capacity exceeds the ObjectId namespace");
     return struct {
         const Self = @This();
         pub const Object = struct {
@@ -20,7 +24,7 @@ pub fn FileSystem(comptime object_capacity: usize, comptime name_capacity: usize
 
         fn initObjects() [object_capacity]Object {
             var result = [_]Object{.{}} ** object_capacity;
-            if (object_capacity > 0) result[0].kind = .directory;
+            result[0].kind = .directory;
             return result;
         }
 

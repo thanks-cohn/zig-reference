@@ -59,7 +59,9 @@ module.exports = {
       "SegmentPlan",
       "max_program_headers",
       "plan",
-      "riscv_machine"
+      "riscv_machine",
+      "DynamicLoadPlan",
+      "planDynamic"
     ],
     "publicTypes": [
       {
@@ -77,6 +79,10 @@ module.exports = {
       {
         "name": "SegmentPlan",
         "kind": "public declaration"
+      },
+      {
+        "name": "DynamicLoadPlan",
+        "kind": "public declaration"
       }
     ],
     "publicFunctions": [
@@ -87,9 +93,22 @@ module.exports = {
       {
         "name": "plan",
         "signature": "plan(comptime capacity: usize, bytes: []const u8) Error!LoadPlan(capacity)"
+      },
+      {
+        "name": "DynamicLoadPlan",
+        "signature": "DynamicLoadPlan(comptime capacity: usize, comptime interpreter_capacity: usize) type"
+      },
+      {
+        "name": "planDynamic",
+        "signature": "planDynamic(comptime capacity: usize, comptime interpreter_capacity: usize, bytes: []const u8) Error!DynamicLoadPlan(capacity, interpreter_capacity)"
       }
     ],
-    "publicMethods": [],
+    "publicMethods": [
+      {
+        "name": "interpreterPath",
+        "signature": "interpreterPath(self: *const DynamicLoadPlan) ?[]const u8"
+      }
+    ],
     "publicConstants": [
       {
         "name": "max_program_headers",
@@ -117,7 +136,10 @@ module.exports = {
       "UnsupportedAlignment",
       "OverlappingLoadSegments",
       "EntryNotExecutable",
-      "PlanCapacityExceeded"
+      "PlanCapacityExceeded",
+      "InterpreterPathMissingTerminator",
+      "InterpreterPathContainsNul",
+      "InterpreterPathTooLong"
     ],
     "invariantsToPreserve": [
       "Preserve the documented bounded-elf64-load-plan public behavior, boundaries, and failure semantics."
@@ -199,10 +221,12 @@ module.exports = {
     ],
     "standardLibrary": [
       "std.math.maxInt",
+      "std.mem.indexOfScalar",
       "std.mem.writeInt",
       "std.testing.expect",
       "std.testing.expectEqual",
       "std.testing.expectEqualDeep",
+      "std.testing.expectEqualStrings",
       "std.testing.expectError"
     ],
     "external": []
@@ -215,6 +239,7 @@ module.exports = {
       "@This",
       "@as",
       "@intCast",
+      "@memcpy",
       "@sizeOf"
     ],
     "notes": []
@@ -269,6 +294,20 @@ module.exports = {
         "notes": []
       },
       {
+        "name": "@memcpy",
+        "files": [
+          {
+            "path": "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig",
+            "lines": [],
+            "symbols": []
+          }
+        ],
+        "baselineBehavior": "Zig 0.14.0 @memcpy behavior as exercised by this module",
+        "portingRisk": "medium",
+        "likelyChangeCategory": "syntax_or_type_semantics",
+        "notes": []
+      },
+      {
         "name": "@sizeOf",
         "files": [
           {
@@ -296,6 +335,19 @@ module.exports = {
         "path": "std.math.maxInt",
         "symbols": [
           "std.math.maxInt"
+        ],
+        "files": [
+          "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
+        ],
+        "purpose": "implementation support",
+        "versionSensitivity": "medium",
+        "knownChanges": [],
+        "migrationNotes": []
+      },
+      {
+        "path": "std.mem.indexOfScalar",
+        "symbols": [
+          "std.mem.indexOfScalar"
         ],
         "files": [
           "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
@@ -360,6 +412,19 @@ module.exports = {
         "migrationNotes": []
       },
       {
+        "path": "std.testing.expectEqualStrings",
+        "symbols": [
+          "std.testing.expectEqualStrings"
+        ],
+        "files": [
+          "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
+        ],
+        "purpose": "test assertions and test allocation",
+        "versionSensitivity": "medium",
+        "knownChanges": [],
+        "migrationNotes": []
+      },
+      {
         "path": "std.testing.expectError",
         "symbols": [
           "std.testing.expectError"
@@ -377,6 +442,7 @@ module.exports = {
       "std.testing.expect",
       "std.testing.expectEqual",
       "std.testing.expectEqualDeep",
+      "std.testing.expectEqualStrings",
       "std.testing.expectError"
     ],
     "allocatorApis": [],
@@ -443,7 +509,9 @@ module.exports = {
   },
   "pointerAndMemoryUsage": {
     "pointerSensitive": true,
-    "builtins": [],
+    "builtins": [
+      "@memcpy"
+    ],
     "borrowedMemoryRules": [],
     "notes": []
   },
@@ -475,7 +543,10 @@ module.exports = {
       "UnsupportedAlignment",
       "OverlappingLoadSegments",
       "EntryNotExecutable",
-      "PlanCapacityExceeded"
+      "PlanCapacityExceeded",
+      "InterpreterPathMissingTerminator",
+      "InterpreterPathContainsNul",
+      "InterpreterPathTooLong"
     ],
     "failureGuarantees": [],
     "panicBehavior": "",
@@ -492,6 +563,7 @@ module.exports = {
       "std.testing.expect",
       "std.testing.expectEqual",
       "std.testing.expectEqualDeep",
+      "std.testing.expectEqualStrings",
       "std.testing.expectError"
     ],
     "semanticCoverage": []
@@ -509,7 +581,9 @@ module.exports = {
         "SegmentPlan",
         "max_program_headers",
         "plan",
-        "riscv_machine"
+        "riscv_machine",
+        "DynamicLoadPlan",
+        "planDynamic"
       ],
       "affectedFiles": [
         "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
@@ -534,7 +608,9 @@ module.exports = {
         "SegmentPlan",
         "max_program_headers",
         "plan",
-        "riscv_machine"
+        "riscv_machine",
+        "DynamicLoadPlan",
+        "planDynamic"
       ],
       "detectionTests": [
         "zig build test-bounded-elf64-load-plan",
@@ -634,24 +710,30 @@ module.exports = {
       "@This",
       "@as",
       "@intCast",
+      "@memcpy",
       "@sizeOf",
       "std.math.maxInt",
+      "std.mem.indexOfScalar",
       "std.mem.writeInt",
       "std.testing.expect",
       "std.testing.expectEqual",
       "std.testing.expectEqualDeep",
+      "std.testing.expectEqualStrings",
       "std.testing.expectError"
     ],
     "likelyCompilerFailureAreas": [
       "@This",
       "@as",
       "@intCast",
+      "@memcpy",
       "@sizeOf",
       "std.math.maxInt",
+      "std.mem.indexOfScalar",
       "std.mem.writeInt",
       "std.testing.expect",
       "std.testing.expectEqual",
       "std.testing.expectEqualDeep",
+      "std.testing.expectEqualStrings",
       "std.testing.expectError"
     ],
     "doNotAssume": [
@@ -690,6 +772,12 @@ module.exports = {
         ]
       },
       {
+        "builtin": "@memcpy",
+        "files": [
+          "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
+        ]
+      },
+      {
         "builtin": "@sizeOf",
         "files": [
           "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig",
@@ -700,6 +788,12 @@ module.exports = {
     "standardLibraryToFiles": [
       {
         "api": "std.math.maxInt",
+        "files": [
+          "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
+        ]
+      },
+      {
+        "api": "std.mem.indexOfScalar",
         "files": [
           "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
         ]
@@ -726,6 +820,12 @@ module.exports = {
       },
       {
         "api": "std.testing.expectEqualDeep",
+        "files": [
+          "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
+        ]
+      },
+      {
+        "api": "std.testing.expectEqualStrings",
         "files": [
           "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
         ]
@@ -764,6 +864,14 @@ module.exports = {
       },
       {
         "symbol": "riscv_machine",
+        "file": "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
+      },
+      {
+        "symbol": "DynamicLoadPlan",
+        "file": "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
+      },
+      {
+        "symbol": "planDynamic",
         "file": "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig"
       }
     ]

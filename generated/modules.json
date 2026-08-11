@@ -990,7 +990,7 @@
       "replacement_module": "",
       "source": "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig",
       "status": "experimental-unverified",
-      "summary": "Convert bounded ELF64 bytes into a failure-atomic RV64 load plan.",
+      "summary": "Convert bounded ELF64 bytes into failure-atomic static or interpreter-handoff RV64 load plans.",
       "target_maturity_level": 2
     },
     {
