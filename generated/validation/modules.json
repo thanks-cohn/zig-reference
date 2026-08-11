@@ -14,7 +14,7 @@
         "projects/00-fixed-capacity-vector/src/fixed_capacity_vector.zig",
         "projects/00-fixed-capacity-vector/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-fixed-capacity-vector",
       "unit_test": "pass",
@@ -35,7 +35,7 @@
         "projects/01-dynamic-array/src/dynamic_array.zig",
         "projects/01-dynamic-array/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-dynamic-array",
       "unit_test": "pass",
@@ -56,7 +56,7 @@
         "projects/02-ring-buffer/src/ring_buffer.zig",
         "projects/02-ring-buffer/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-ring-buffer",
       "unit_test": "pass",
@@ -77,7 +77,7 @@
         "projects/03-bit-set/src/bit_set.zig",
         "projects/03-bit-set/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bit-set",
       "unit_test": "pass",
@@ -98,7 +98,7 @@
         "projects/04-bounded-byte-reader/src/bounded_byte_reader.zig",
         "projects/04-bounded-byte-reader/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-byte-reader",
       "unit_test": "pass",
@@ -119,7 +119,7 @@
         "projects/05-stack/src/stack.zig",
         "projects/05-stack/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-stack",
       "unit_test": "pass",
@@ -140,7 +140,7 @@
         "projects/06-byte-writer/src/byte_writer.zig",
         "projects/06-byte-writer/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-byte-writer",
       "unit_test": "pass",
@@ -161,7 +161,7 @@
         "projects/07-bitmap-allocator/src/bitmap_allocator.zig",
         "projects/07-bitmap-allocator/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bitmap-allocator",
       "unit_test": "pass",
@@ -182,7 +182,7 @@
         "projects/08-generational-handles/src/generational_handles.zig",
         "projects/08-generational-handles/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-generational-handles",
       "unit_test": "pass",
@@ -203,7 +203,7 @@
         "projects/09-state-machine/src/state_machine.zig",
         "projects/09-state-machine/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-state-machine",
       "unit_test": "pass",
@@ -224,7 +224,7 @@
         "projects/10-checked-integer-cast/src/checked_integer_cast.zig",
         "projects/10-checked-integer-cast/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-checked-integer-cast",
       "unit_test": "pass",
@@ -245,7 +245,7 @@
         "projects/11-nonzero-integer/src/nonzero_integer.zig",
         "projects/11-nonzero-integer/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-nonzero-integer",
       "unit_test": "pass",
@@ -266,7 +266,7 @@
         "projects/12-bounded-integer/src/bounded_integer.zig",
         "projects/12-bounded-integer/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-integer",
       "unit_test": "pass",
@@ -287,7 +287,7 @@
         "projects/13-saturating-counter/src/saturating_counter.zig",
         "projects/13-saturating-counter/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-saturating-counter",
       "unit_test": "pass",
@@ -308,7 +308,7 @@
         "projects/14-validated-enum-decoder/src/validated_enum_decoder.zig",
         "projects/14-validated-enum-decoder/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-validated-enum-decoder",
       "unit_test": "pass",
@@ -329,7 +329,7 @@
         "projects/15-aligned-address-and-size-helpers/src/aligned_address_and_size_helpers.zig",
         "projects/15-aligned-address-and-size-helpers/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-aligned-address-and-size-helpers",
       "unit_test": "pass",
@@ -350,7 +350,7 @@
         "projects/16-validated-bit-flags/src/validated_bit_flags.zig",
         "projects/16-validated-bit-flags/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-validated-bit-flags",
       "unit_test": "pass",
@@ -371,7 +371,7 @@
         "projects/17-checked-half-open-range/src/checked_half_open_range.zig",
         "projects/17-checked-half-open-range/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-checked-half-open-range",
       "unit_test": "pass",
@@ -392,7 +392,7 @@
         "projects/18-distinct-memory-address-types/src/distinct_memory_address_types.zig",
         "projects/18-distinct-memory-address-types/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-distinct-memory-address-types",
       "unit_test": "pass",
@@ -413,7 +413,7 @@
         "projects/19-wrapping-sequence-number/src/wrapping_sequence_number.zig",
         "projects/19-wrapping-sequence-number/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-wrapping-sequence-number",
       "unit_test": "pass",
@@ -434,7 +434,7 @@
         "projects/20-optional-typed-handle/src/optional_typed_handle.zig",
         "projects/20-optional-typed-handle/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-optional-typed-handle",
       "unit_test": "pass",
@@ -455,7 +455,7 @@
         "projects/21-unit-safe-quantity/src/unit_safe_quantity.zig",
         "projects/21-unit-safe-quantity/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-unit-safe-quantity",
       "unit_test": "pass",
@@ -476,7 +476,7 @@
         "projects/22-endian-integer-codec/src/endian_integer_codec.zig",
         "projects/22-endian-integer-codec/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-endian-integer-codec",
       "unit_test": "pass",
@@ -497,7 +497,7 @@
         "projects/23-validated-ascii-byte/src/validated_ascii_byte.zig",
         "projects/23-validated-ascii-byte/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-validated-ascii-byte",
       "unit_test": "pass",
@@ -518,7 +518,7 @@
         "projects/24-fourcc-code/src/fourcc_code.zig",
         "projects/24-fourcc-code/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-fourcc-code",
       "unit_test": "pass",
@@ -539,7 +539,7 @@
         "projects/25-semantic-version/src/semantic_version.zig",
         "projects/25-semantic-version/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-semantic-version",
       "unit_test": "pass",
@@ -560,7 +560,7 @@
         "projects/26-tagged-result/src/tagged_result.zig",
         "projects/26-tagged-result/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-tagged-result",
       "unit_test": "pass",
@@ -581,7 +581,7 @@
         "projects/27-source-span/src/source_span.zig",
         "projects/27-source-span/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-source-span",
       "unit_test": "pass",
@@ -602,7 +602,7 @@
         "projects/28-physical-page-frame-number-and-address-conversion/src/physical_page_frame_number_and_address_conversion.zig",
         "projects/28-physical-page-frame-number-and-address-conversion/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-physical-page-frame-number-and-address-conversion",
       "unit_test": "pass",
@@ -623,7 +623,7 @@
         "projects/29-binary-cursor-checkpoint/src/binary_cursor_checkpoint.zig",
         "projects/29-binary-cursor-checkpoint/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-binary-cursor-checkpoint",
       "unit_test": "pass",
@@ -644,7 +644,7 @@
         "projects/30-bounded-binary-sub-reader/src/bounded_binary_sub_reader.zig",
         "projects/30-bounded-binary-sub-reader/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-binary-sub-reader",
       "unit_test": "pass",
@@ -665,7 +665,7 @@
         "projects/31-length-prefixed-binary-field/src/length_prefixed_binary_field.zig",
         "projects/31-length-prefixed-binary-field/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-length-prefixed-binary-field",
       "unit_test": "pass",
@@ -686,7 +686,7 @@
         "projects/32-type-length-value-decoder/src/type_length_value_decoder.zig",
         "projects/32-type-length-value-decoder/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-type-length-value-decoder",
       "unit_test": "pass",
@@ -707,7 +707,7 @@
         "projects/33-owned-byte-buffer/src/owned_byte_buffer.zig",
         "projects/33-owned-byte-buffer/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-owned-byte-buffer",
       "unit_test": "pass",
@@ -728,7 +728,7 @@
         "projects/34-fixed-capacity-object-pool/src/fixed_capacity_object_pool.zig",
         "projects/34-fixed-capacity-object-pool/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-fixed-capacity-object-pool",
       "unit_test": "pass",
@@ -749,7 +749,7 @@
         "projects/35-physical-memory-region-set/src/physical_memory_region_set.zig",
         "projects/35-physical-memory-region-set/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-physical-memory-region-set",
       "unit_test": "pass",
@@ -770,7 +770,7 @@
         "projects/36-physical-page-frame-allocator/src/physical_page_frame_allocator.zig",
         "projects/36-physical-page-frame-allocator/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-physical-page-frame-allocator",
       "unit_test": "pass",
@@ -791,7 +791,7 @@
         "projects/37-elf64-file-header-parser/src/elf64_file_header_parser.zig",
         "projects/37-elf64-file-header-parser/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-elf64-file-header-parser",
       "unit_test": "pass",
@@ -812,7 +812,7 @@
         "projects/38-elf64-program-header-parser/src/elf64_program_header_parser.zig",
         "projects/38-elf64-program-header-parser/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-elf64-program-header-parser",
       "unit_test": "pass",
@@ -833,7 +833,7 @@
         "projects/39-intrusive-doubly-linked-list/src/intrusive_doubly_linked_list.zig",
         "projects/39-intrusive-doubly-linked-list/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-intrusive-doubly-linked-list",
       "unit_test": "pass",
@@ -854,7 +854,7 @@
         "projects/40-fixed-free-list/src/fixed_free_list.zig",
         "projects/40-fixed-free-list/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-fixed-free-list",
       "unit_test": "pass",
@@ -875,7 +875,7 @@
         "projects/41-fixed-bump-allocator/src/fixed_bump_allocator.zig",
         "projects/41-fixed-bump-allocator/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-fixed-bump-allocator",
       "unit_test": "pass",
@@ -896,7 +896,7 @@
         "projects/42-fixed-capacity-priority-queue/src/fixed_capacity_priority_queue.zig",
         "projects/42-fixed-capacity-priority-queue/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-fixed-capacity-priority-queue",
       "unit_test": "pass",
@@ -917,7 +917,7 @@
         "projects/43-fixed-capacity-topological-sort/src/fixed_capacity_topological_sort.zig",
         "projects/43-fixed-capacity-topological-sort/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-fixed-capacity-topological-sort",
       "unit_test": "pass",
@@ -938,7 +938,7 @@
         "projects/44-riscv-sv39-page-table-entry/src/riscv_sv39_page_table_entry.zig",
         "projects/44-riscv-sv39-page-table-entry/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-riscv-sv39-page-table-entry",
       "unit_test": "pass",
@@ -959,7 +959,7 @@
         "projects/45-riscv-sv39-virtual-address-indexing/src/riscv_sv39_virtual_address_indexing.zig",
         "projects/45-riscv-sv39-virtual-address-indexing/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-riscv-sv39-virtual-address-indexing",
       "unit_test": "pass",
@@ -980,7 +980,7 @@
         "projects/46-riscv-page-table-page-owner/src/riscv_page_table_page_owner.zig",
         "projects/46-riscv-page-table-page-owner/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-riscv-page-table-page-owner",
       "unit_test": "pass",
@@ -1001,7 +1001,7 @@
         "projects/47-riscv-sv39-page-table-walker/src/riscv_sv39_page_table_walker.zig",
         "projects/47-riscv-sv39-page-table-walker/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-riscv-sv39-page-table-walker",
       "unit_test": "pass",
@@ -1022,7 +1022,7 @@
         "projects/48-riscv-sfence-vma-invalidation/src/riscv_sfence_vma_invalidation.zig",
         "projects/48-riscv-sfence-vma-invalidation/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-riscv-sfence-vma-invalidation",
       "unit_test": "pass",
@@ -1043,7 +1043,7 @@
         "projects/49-riscv-sv39-page-table-builder/src/riscv_sv39_page_table_builder.zig",
         "projects/49-riscv-sv39-page-table-builder/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-riscv-sv39-page-table-builder",
       "unit_test": "pass",
@@ -1064,7 +1064,7 @@
         "projects/50-bounded-system-resource-plan/src/bounded_system_resource_plan.zig",
         "projects/50-bounded-system-resource-plan/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-system-resource-plan",
       "unit_test": "pass",
@@ -1085,7 +1085,7 @@
         "projects/51-bounded-deterministic-event-trace/src/bounded_deterministic_event_trace.zig",
         "projects/51-bounded-deterministic-event-trace/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-deterministic-event-trace",
       "unit_test": "pass",
@@ -1106,7 +1106,7 @@
         "projects/52-bounded-deterministic-scheduler/src/bounded_deterministic_scheduler.zig",
         "projects/52-bounded-deterministic-scheduler/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-deterministic-scheduler",
       "unit_test": "pass",
@@ -1127,7 +1127,7 @@
         "projects/53-bounded-user-memory-transfer-plan/src/bounded_user_memory_transfer_plan.zig",
         "projects/53-bounded-user-memory-transfer-plan/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-user-memory-transfer-plan",
       "unit_test": "pass",
@@ -1141,14 +1141,14 @@
       "optimization_mode": "Debug",
       "smoke_target": "zig build smoke-bounded-elf64-load-plan",
       "smoke_test": "pass",
-      "source_digest": "2a2e1ec705c2f3b4e13e37ba8be0723347221c5d07c7c65f0bedcf6ca6914da3",
+      "source_digest": "643a4610e89e666a653891f7484bd1e7355457ec79d3f5f9304335f7692ab066",
       "source_files": [
         "build.zig",
         "projects/54-bounded-elf64-load-plan/details.json",
         "projects/54-bounded-elf64-load-plan/src/bounded_elf64_load_plan.zig",
         "projects/54-bounded-elf64-load-plan/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-elf64-load-plan",
       "unit_test": "pass",
@@ -1169,7 +1169,7 @@
         "projects/55-bounded-rv64-linux-initial-stack-plan/src/bounded_rv64_linux_initial_stack_plan.zig",
         "projects/55-bounded-rv64-linux-initial-stack-plan/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-rv64-linux-initial-stack-plan",
       "unit_test": "pass",
@@ -1190,7 +1190,7 @@
         "projects/56-morphic-semantic-operation/src/morphic_semantic_operation.zig",
         "projects/56-morphic-semantic-operation/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-morphic-semantic-operation",
       "unit_test": "pass",
@@ -1211,7 +1211,7 @@
         "projects/57-bounded-resource-table/src/bounded_resource_table.zig",
         "projects/57-bounded-resource-table/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-resource-table",
       "unit_test": "pass",
@@ -1225,14 +1225,14 @@
       "optimization_mode": "Debug",
       "smoke_target": "zig build smoke-bounded-filesystem",
       "smoke_test": "pass",
-      "source_digest": "99034984a73d1c6686cc434ffc03be902021d700e23d7c8b8785a1c54b4a6289",
+      "source_digest": "5882934d8f68ad19a1b4c8a86f8c7bda9dc9750df74e285496eb6ecbae17b9c2",
       "source_files": [
         "build.zig",
         "projects/58-bounded-filesystem/details.json",
         "projects/58-bounded-filesystem/src/bounded_filesystem.zig",
         "projects/58-bounded-filesystem/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-filesystem",
       "unit_test": "pass",
@@ -1246,14 +1246,14 @@
       "optimization_mode": "Debug",
       "smoke_target": "zig build smoke-bounded-address-space-exec-image",
       "smoke_test": "pass",
-      "source_digest": "52cdb6fc9d0f2cbf913217bcc142868bc887271b8d1253f2c605867d8cbb5cdc",
+      "source_digest": "a4a62664bb6aa672696e99190907b169f4020051e47afcbbe877b9d1b7253515",
       "source_files": [
         "build.zig",
         "projects/59-bounded-address-space-exec-image/details.json",
         "projects/59-bounded-address-space-exec-image/src/bounded_address_space_exec_image.zig",
         "projects/59-bounded-address-space-exec-image/tests/smoke_test.zig"
       ],
-      "source_revision": "f1a47eb522480d1a86e3739ae57672bd0f534564",
+      "source_revision": "18810d43bf37d12abd214b8a72b91e94d8b82a4e",
       "target_triple": "native",
       "unit_target": "zig build test-bounded-address-space-exec-image",
       "unit_test": "pass",

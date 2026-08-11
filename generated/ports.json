@@ -313,7 +313,9 @@
             "SegmentPlan",
             "max_program_headers",
             "plan",
-            "riscv_machine"
+            "riscv_machine",
+            "DynamicLoadPlan",
+            "planDynamic"
           ],
           "consequence": "A syntactically successful port could violate the module contract.",
           "detectionTests": [

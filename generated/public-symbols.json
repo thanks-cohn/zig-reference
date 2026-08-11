@@ -113,6 +113,10 @@
       "symbol": "DynamicArray"
     },
     {
+      "module": "bounded-elf64-load-plan",
+      "symbol": "DynamicLoadPlan"
+    },
+    {
       "module": "elf64-file-header-parser",
       "symbol": "Elf64FileHeader"
     },
@@ -615,6 +619,10 @@
     {
       "module": "bounded-rv64-linux-initial-stack-plan",
       "symbol": "plan"
+    },
+    {
+      "module": "bounded-elf64-load-plan",
+      "symbol": "planDynamic"
     },
     {
       "module": "bounded-resource-table",

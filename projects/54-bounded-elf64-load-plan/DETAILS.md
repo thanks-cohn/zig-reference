@@ -12,3 +12,7 @@ The returned `LoadPlan` owns fixed inline storage in program-header order. Each 
 
 ## Environment and non-goals
 The mechanism is deterministic, allocation-free, endian-aware, and usable hosted or freestanding. It is not thread-sensitive; ELF addresses that do not fit the `usize`-backed address/range types are rejected deterministically. It performs no page allocation, mapping, byte copy, BSS zeroing, cache/TLB fence, privilege transition, syscall, relocation, interpreter, or execution.
+
+## Dynamic interpreter handoff
+
+`planDynamic` is a separate, explicit policy surface for RV64 `ET_EXEC`/`ET_DYN` images. It owns and validates a single NUL-terminated `PT_INTERP` pathname and tolerates `PT_DYNAMIC` as interpreter work; it never relocates bytes. The original `plan` contract remains the narrow static `ET_EXEC` proof and continues to reject `PT_INTERP`, `PT_DYNAMIC`, and non-executable object types.
