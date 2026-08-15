@@ -269,6 +269,14 @@ pub fn build(b: *std.Build) void {
             fstat_test_module.addImport("bounded-resource-table", findModule("bounded-resource-table", &modules));
             const fstat_tests = b.addTest(.{ .root_module = fstat_test_module });
             recipe_step.dependOn(&b.addRunArtifact(fstat_tests).step);
+            const file_mmap_test_module = b.createModule(.{
+                .root_source_file = b.path("recipes/run-hosted-morphic-runtime/src/linux_rv64_file_mmap.zig"),
+                .target = target,
+                .optimize = optimize,
+            });
+            file_mmap_test_module.addImport("bounded-resource-table", findModule("bounded-resource-table", &modules));
+            const file_mmap_tests = b.addTest(.{ .root_module = file_mmap_test_module });
+            recipe_step.dependOn(&b.addRunArtifact(file_mmap_tests).step);
             const mapping_preflight_tests = b.addTest(.{ .root_module = b.createModule(.{
                 .root_source_file = b.path("recipes/run-hosted-morphic-runtime/src/bounded_mapping_preflight.zig"),
                 .target = target,
