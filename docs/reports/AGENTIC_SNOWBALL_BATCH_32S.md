@@ -36,8 +36,12 @@ namespace regular backend, preserves descriptor state/file position, reserves
 the range before mapping, installs requested PTE permissions, rolls back
 partially installed leaves, and commits backing ownership only after success.
 Tests prove exact offset bytes, tail zeroing, source immutability, RX without
-W+X, invalid mapping class/alignment/range, and W+X rejection. Existing binding
-resolution tests retain permanent EBADF/ownership-conservation coverage.
+W+X, invalid mapping class/alignment/range, and W+X rejection. The runtime now
+uses the same testable reserve/prepare/map transaction exercised by focused
+regressions for unbound-descriptor `EBADF`, unchanged file position and
+resource/reference/binding ownership, occupied-range rejection, capacity
+exhaustion without a leaked reservation, and deterministic second-page mapping
+failure with installed-leaf and reservation rollback.
 
 ## Exact Alpine and QEMU evidence
 
@@ -64,16 +68,24 @@ libcrypto capacity failure. `libz.so.1` is present as a relative symlink and
 still reports ENOENT, also downstream.
 
 `/sbin/apk --version` did **not** succeed; `--help` and `info` were not reached.
-The playable-shell regression was not rerun before persistence; focused recipe
-tests and the namespace-backed freestanding build did pass.
+The cleanup follow-up re-proved the complete Playable Alpine acceptance in one
+persistent real-QEMU shell: `echo morphic`, `echo second`, initial `pwd` (`/`),
+`ls /` (the real root entries), `cat /etc/alpine-release` (`3.22.0`), `cd /tmp`,
+`pwd` (`/tmp`), redirection/read-back (`hello`), pipeline (`hello`), and final
+`echo still-alive` all produced the expected output before the externally
+bounded live machine was terminated.
 
 ## Validation, files, and one next pressure
 
-Passed: focused namespace lookup tests (5/5), file mmap tests (2/2), the complete
-Morphic recipe step, formatting, namespace acquisition, and the freestanding
-build. Two corrected delayed-input QEMU retries preserved the failure above.
+Passed: focused namespace lookup and stat identity tests, all four focused file
+mmap tests (including integrated ownership/failure atomicity), the complete
+Morphic recipe step, formatting, namespace acquisition, the namespace-backed
+freestanding build, `zig build check`, and the canonical full repository
+validation. Canonical unit/smoke evidence for all 60 modules was regenerated
+after the root build wiring change. The real-QEMU persistent-shell gate passed.
 
-Changed files are `build.zig`, `COMMANDS.md`, this report, and
+Changed files are `build.zig`, `COMMANDS.md`, this report,
+`generated/validation/modules.json`, and
 `recipes/run-hosted-morphic-runtime/src/{bounded_namespace_lookup.zig,
 freestanding_riscv64.zig,linux_rv64_file_mmap.zig}`. Final commit SHA is the
 commit containing this report (obtain with `git rev-parse HEAD`).

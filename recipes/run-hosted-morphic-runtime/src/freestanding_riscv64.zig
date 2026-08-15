@@ -1815,9 +1815,44 @@ fn externalPageOccupied(_: void, page: usize) bool {
     return leaf.raw_entry & 1 != 0 and leaf.raw_entry & 0xe != 0;
 }
 
+const ExternalFileMmapContext = struct {
+    source: []const u8,
+    backing_start: usize,
+
+    pub fn occupied(_: *@This(), page: usize) bool {
+        return externalPageOccupied({}, page);
+    }
+
+    pub fn prepare(self: *@This(), plan: linux_rv64_file_mmap.Plan) !void {
+        const page_count = plan.mapped_length / frames.PageSize;
+        for (external_prepared_backing[self.backing_start .. self.backing_start + page_count]) |*page| @memset(page, 0);
+        const bytes = self.source[plan.file_offset..][0..plan.byte_length];
+        for (bytes, 0..) |byte, byte_index|
+            external_prepared_backing[self.backing_start + byte_index / frames.PageSize][byte_index % frames.PageSize] = byte;
+    }
+
+    pub fn mapPage(self: *@This(), virtual: usize, page_index: usize, permissions: linux_rv64_file_mmap.Permissions) !void {
+        const physical = @intFromPtr(&external_prepared_backing[self.backing_start + page_index]);
+        _ = try batch26_builder.mapPage(virtual, physical, .page_4k, .{
+            .read = permissions.read,
+            .write = permissions.write,
+            .execute = permissions.execute,
+            .user = true,
+            .accessed = true,
+            .dirty = permissions.write,
+        });
+    }
+
+    pub fn unmapPage(_: *@This(), virtual: usize) !void {
+        _ = try batch26_builder.unmapPage(virtual, .page_4k);
+    }
+};
+
 fn externalFileMmap(length: usize, protection: usize, flags: usize, descriptor: usize, offset: usize) usize {
-    const description = linux_rv64_fstat.resolveDescription(&syscall_resources, &syscall_bindings, descriptor) catch return negativeErrno(9);
-    if (@intFromEnum(description.backend) != 0x101) return negativeErrno(19);
+    const description = linux_rv64_file_mmap.resolveRegular(&syscall_resources, &syscall_bindings, descriptor, 0x101) catch |err| return negativeErrno(switch (err) {
+        error.BadDescriptor => 9,
+        error.UnsupportedResource => 19,
+    });
     const manifest_offset = description.state >> 32;
     const manifest: []const u8 = &external_rv64_namespace_manifest;
     if (manifest_offset >= manifest.len) return negativeErrno(5);
@@ -1837,39 +1872,19 @@ fn externalFileMmap(length: usize, protection: usize, flags: usize, descriptor: 
 
     var candidate = external_program_break;
     while (candidate < user_stack_va) : (candidate += frames.PageSize) {
-        external_runtime_mappings.reserve(candidate, plan.mapped_length, .{
-            .read = plan.permissions.read,
-            .write = plan.permissions.write,
-            .execute = plan.permissions.execute,
-        }, false, {}, externalPageOccupied) catch |err| switch (err) {
+        var context = ExternalFileMmapContext{
+            .source = external_rv64_namespace_data[data_offset .. data_offset + data_length],
+            .backing_start = external_next_backing,
+        };
+        linux_rv64_file_mmap.mapPrivate(plan, candidate, &external_runtime_mappings, &context, ExternalFileMmapContext.occupied) catch |err| switch (err) {
             error.Collision => continue,
             error.InvalidRange, error.WriteExecute => return negativeErrno(22),
             error.CapacityExceeded => return negativeErrno(12),
-        };
-        for (external_prepared_backing[external_next_backing..backing_end]) |*page| @memset(page, 0);
-        const source = external_rv64_namespace_data[data_offset + plan.file_offset ..][0..plan.byte_length];
-        for (source, 0..) |byte, byte_index|
-            external_prepared_backing[external_next_backing + byte_index / frames.PageSize][byte_index % frames.PageSize] = byte;
-        var mapped: usize = 0;
-        while (mapped < page_count) : (mapped += 1) {
-            const virtual = candidate + mapped * frames.PageSize;
-            const physical = @intFromPtr(&external_prepared_backing[external_next_backing + mapped]);
-            _ = batch26_builder.mapPage(virtual, physical, .page_4k, .{
-                .read = plan.permissions.read,
-                .write = plan.permissions.write,
-                .execute = plan.permissions.execute,
-                .user = true,
-                .accessed = true,
-                .dirty = plan.permissions.write,
-            }) catch {
-                var rollback: usize = 0;
-                while (rollback < mapped) : (rollback += 1)
-                    _ = batch26_builder.unmapPage(candidate + rollback * frames.PageSize, .page_4k) catch shutdown();
-                external_runtime_mappings.cancelLast(candidate, plan.mapped_length);
+            else => {
                 asm volatile ("sfence.vma" ::: "memory");
                 return negativeErrno(12);
-            };
-        }
+            },
+        };
         external_next_backing = backing_end;
         asm volatile ("sfence.vma" ::: "memory");
         return candidate;
