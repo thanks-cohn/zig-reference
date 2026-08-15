@@ -67,6 +67,15 @@ fn find(manifest: []const u8, path: []const u8) Error!Found {
     return error.NotFound;
 }
 
+/// Returns the exact namespace object named by `guest_path` without following
+/// its final symlink. This is the canonical identity source for lstat-style
+/// metadata; ordinary stat/open callers use `resolve` and therefore share the
+/// resolved target object's `manifest_offset`.
+pub fn resolveFinalObject(manifest: []const u8, guest_path: []const u8) Error!Object {
+    if (!validAbsolutePath(guest_path)) return error.InvalidPath;
+    return (try find(manifest, guest_path)).object;
+}
+
 pub fn resolve(manifest: []const u8, guest_path: []const u8, follow_final_symlink: bool) Error!Object {
     if (!validAbsolutePath(guest_path)) return error.InvalidPath;
     var path = guest_path;
@@ -98,6 +107,15 @@ test "ordinary symlink open resolves target identity" {
     try std.testing.expectEqual(Kind.regular, object.kind);
     try std.testing.expectEqual(@as(usize, 4), object.data_offset);
     try std.testing.expectEqual(@as(usize, 1), object.traversals);
+}
+
+test "followed and no-follow identities select target and link objects" {
+    const target = try resolve(fixture, "/real", true);
+    const followed = try resolve(fixture, "/link", true);
+    const link = try resolveFinalObject(fixture, "/link");
+    try std.testing.expectEqual(target.manifest_offset, followed.manifest_offset);
+    try std.testing.expect(link.manifest_offset != followed.manifest_offset);
+    try std.testing.expectEqual(Kind.symlink, link.kind);
 }
 
 test "no-follow rejects final symlink" {

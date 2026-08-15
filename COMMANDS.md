@@ -704,3 +704,12 @@ and ownership-conservation coverage for fstat, then regenerates all 60
 canonical unit/smoke evidence records after the root build wiring change. The
 runtime command surface and measured file-backed `mmap(222)` frontier remain
 unchanged.
+
+Batch 32S made namespace object offsets the shared stat identity for followed
+`newfstatat` and open-plus-`fstat`, while no-follow metadata retains the final
+symlink object's identity. It also reclassified the mmap rejection marker as
+ordinary `LINUX_MMAP_REJECT` trace output and added a bounded private
+file-mapping planner and runtime path. Real QEMU proved the initial libapk
+mapping crosses, while libcrypto now fails deterministically at the existing
+320-page private-backing capacity and the loader's later fixed file mapping
+remains unsupported. No new runnable command was introduced.

@@ -22,6 +22,7 @@ const linux_rv64_clone_request = @import("linux_rv64_clone_request.zig");
 const linux_rv64_fdupfd = @import("linux_rv64_fdupfd.zig");
 const linux_rv64_dup3 = @import("linux_rv64_dup3.zig");
 const linux_rv64_fstat = @import("linux_rv64_fstat.zig");
+const linux_rv64_file_mmap = @import("linux_rv64_file_mmap.zig");
 const bounded_pipe = @import("bounded_pipe.zig");
 const linux_rv64_pipe2 = @import("linux_rv64_pipe2.zig");
 const linux_rv64_pipe_lifetime = @import("linux_rv64_pipe_lifetime.zig");
@@ -1769,32 +1770,23 @@ fn externalNamespaceStat(path_address: usize, destination: usize, flags: usize) 
     }
     if (!std.mem.eql(u8, path, "/") and !validAbsolutePath(path)) return negativeErrno(2);
     const manifest: []const u8 = &external_rv64_namespace_manifest;
-    var cursor: usize = 0;
-    while (std.mem.indexOfPos(u8, manifest, cursor, "\"path\":\"")) |at| {
-        const object_end = std.mem.indexOfScalarPos(u8, manifest, at, '}') orelse return negativeErrno(5);
-        const object_begin = std.mem.lastIndexOfScalar(u8, manifest[0..at], '{') orelse return negativeErrno(5);
-        const row = manifest[object_begin .. object_end + 1];
-        const found = jsonStringAfter(row, 0, "\"path\":\"") orelse return negativeErrno(5);
-        if (std.mem.eql(u8, found, path)) {
-            const kind = jsonStringAfter(row, 0, "\"kind\":\"") orelse return negativeErrno(5);
-            const follow_symlink = std.mem.eql(u8, kind, "symlink") and flags & 0x100 == 0;
-            const followed = if (follow_symlink) namespaceLookup(manifest, path, &external_rv64_namespace_data) orelse return negativeErrno(2) else null;
-            const mode: u32 = if (std.mem.eql(u8, kind, "directory")) 0o040755 else if (std.mem.eql(u8, kind, "symlink") and !follow_symlink) 0o120777 else if (std.mem.eql(u8, kind, "regular") or follow_symlink) 0o100755 else return negativeErrno(2);
-            const size: u64 = if (followed) |file| file.bytes.len else if (std.mem.eql(u8, kind, "regular")) jsonUnsignedAfter(row, 0, "\"data_length\":") orelse return negativeErrno(5) else 0;
-            var stat: [128]u8 = .{0} ** 128;
-            std.mem.writeInt(u64, stat[0..8], 1, .little); // st_dev
-            std.mem.writeInt(u64, stat[8..16], at + 1, .little); // stable bounded inode
-            std.mem.writeInt(u32, stat[16..20], mode, .little);
-            std.mem.writeInt(u32, stat[20..24], 1, .little);
-            std.mem.writeInt(u64, stat[48..56], size, .little);
-            std.mem.writeInt(u32, stat[56..60], 4096, .little);
-            std.mem.writeInt(u64, stat[64..72], (size + 511) / 512, .little);
-            copyBytesToUser(destination, &stat) catch return negativeErrno(14);
-            return 0;
-        }
-        cursor = object_end + 1;
-    }
-    return negativeErrno(2);
+    const object = (if (flags & 0x100 != 0)
+        bounded_namespace_lookup.resolveFinalObject(manifest, path)
+    else
+        bounded_namespace_lookup.resolve(manifest, path, true)) catch |err| return negativeErrno(if (err == error.MalformedObject) 5 else 2);
+    const row_end = std.mem.indexOfScalarPos(u8, manifest, object.manifest_offset, '}') orelse return negativeErrno(5);
+    const row = manifest[object.manifest_offset .. row_end + 1];
+    const size = if (object.kind == .regular) object.data_length else if (object.kind == .symlink) (jsonStringAfter(row, 0, "\"target\":\"") orelse return negativeErrno(5)).len else 0;
+    linux_rv64_fstat.copyOut(.{
+        .inode = object.manifest_offset + 1,
+        .mode = switch (object.kind) {
+            .directory => 0o040755,
+            .regular => 0o100755,
+            .symlink => 0o120777,
+        },
+        .size = size,
+    }, destination, copyBytesToUser) catch return negativeErrno(14);
+    return 0;
 }
 
 fn externalResourceFstat(descriptor: usize, destination: usize) usize {
@@ -1821,6 +1813,68 @@ fn externalResourceFstat(descriptor: usize, destination: usize) usize {
 fn externalPageOccupied(_: void, page: usize) bool {
     const leaf = batch26_builder.query(page) catch return false;
     return leaf.raw_entry & 1 != 0 and leaf.raw_entry & 0xe != 0;
+}
+
+fn externalFileMmap(length: usize, protection: usize, flags: usize, descriptor: usize, offset: usize) usize {
+    const description = linux_rv64_fstat.resolveDescription(&syscall_resources, &syscall_bindings, descriptor) catch return negativeErrno(9);
+    if (@intFromEnum(description.backend) != 0x101) return negativeErrno(19);
+    const manifest_offset = description.state >> 32;
+    const manifest: []const u8 = &external_rv64_namespace_manifest;
+    if (manifest_offset >= manifest.len) return negativeErrno(5);
+    const row_end = std.mem.indexOfScalarPos(u8, manifest, manifest_offset, '}') orelse return negativeErrno(5);
+    const row = manifest[manifest_offset .. row_end + 1];
+    const data_offset = jsonUnsignedAfter(row, 0, "\"data_offset\":") orelse return negativeErrno(5);
+    const data_length = jsonUnsignedAfter(row, 0, "\"data_length\":") orelse return negativeErrno(5);
+    if (data_offset > external_rv64_namespace_data.len or data_length > external_rv64_namespace_data.len - data_offset) return negativeErrno(5);
+    const plan = linux_rv64_file_mmap.plan(data_length, length, protection, flags, offset, frames.PageSize) catch |err| return negativeErrno(switch (err) {
+        error.InvalidArgument, error.PermissionDenied => 22,
+        error.FileRange => 75,
+        error.AddressOverflow => 12,
+    });
+    const page_count = plan.mapped_length / frames.PageSize;
+    const backing_end = std.math.add(usize, external_next_backing, page_count) catch return negativeErrno(12);
+    if (backing_end > prepared_image_pages) return negativeErrno(12);
+
+    var candidate = external_program_break;
+    while (candidate < user_stack_va) : (candidate += frames.PageSize) {
+        external_runtime_mappings.reserve(candidate, plan.mapped_length, .{
+            .read = plan.permissions.read,
+            .write = plan.permissions.write,
+            .execute = plan.permissions.execute,
+        }, false, {}, externalPageOccupied) catch |err| switch (err) {
+            error.Collision => continue,
+            error.InvalidRange, error.WriteExecute => return negativeErrno(22),
+            error.CapacityExceeded => return negativeErrno(12),
+        };
+        for (external_prepared_backing[external_next_backing..backing_end]) |*page| @memset(page, 0);
+        const source = external_rv64_namespace_data[data_offset + plan.file_offset ..][0..plan.byte_length];
+        for (source, 0..) |byte, byte_index|
+            external_prepared_backing[external_next_backing + byte_index / frames.PageSize][byte_index % frames.PageSize] = byte;
+        var mapped: usize = 0;
+        while (mapped < page_count) : (mapped += 1) {
+            const virtual = candidate + mapped * frames.PageSize;
+            const physical = @intFromPtr(&external_prepared_backing[external_next_backing + mapped]);
+            _ = batch26_builder.mapPage(virtual, physical, .page_4k, .{
+                .read = plan.permissions.read,
+                .write = plan.permissions.write,
+                .execute = plan.permissions.execute,
+                .user = true,
+                .accessed = true,
+                .dirty = plan.permissions.write,
+            }) catch {
+                var rollback: usize = 0;
+                while (rollback < mapped) : (rollback += 1)
+                    _ = batch26_builder.unmapPage(candidate + rollback * frames.PageSize, .page_4k) catch shutdown();
+                external_runtime_mappings.cancelLast(candidate, plan.mapped_length);
+                asm volatile ("sfence.vma" ::: "memory");
+                return negativeErrno(12);
+            };
+        }
+        external_next_backing = backing_end;
+        asm volatile ("sfence.vma" ::: "memory");
+        return candidate;
+    }
+    return negativeErrno(12);
 }
 
 fn recordLinuxRv64Syscall(frame: *TrapFrame) void {
@@ -2110,9 +2164,11 @@ fn recordLinuxRv64Syscall(frame: *TrapFrame) void {
             // Linux/RV64 UAPI: MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS.
             // This observed minimum slice is an exact, page-aligned, no-access
             // anonymous reservation. Linux values and errno remain here.
-            if (descriptor != std.math.maxInt(usize) or offset != 0 or length == 0) {
+            if (address == 0 and flags == 0x2) {
+                frame.x[10] = externalFileMmap(length, protection, flags, descriptor, offset);
+            } else if (descriptor != std.math.maxInt(usize) or offset != 0 or length == 0) {
                 if (external_artifact_options.live_console_input) {
-                    write("ZIGREF_LINUX_MMAP_REJECT address=");
+                    write("LINUX_MMAP_REJECT address=");
                     writeUsizeHex(address);
                     write(" length=");
                     writeUsizeHex(length);
@@ -2189,7 +2245,7 @@ fn recordLinuxRv64Syscall(frame: *TrapFrame) void {
                 } else frame.x[10] = negativeErrno(12);
             } else {
                 if (external_artifact_options.live_console_input) {
-                    write("ZIGREF_LINUX_MMAP_REJECT address=");
+                    write("LINUX_MMAP_REJECT address=");
                     writeUsizeHex(address);
                     write(" length=");
                     writeUsizeHex(length);
